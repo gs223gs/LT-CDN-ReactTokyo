@@ -1,6 +1,6 @@
 const { HashRouter, Switch, Route, Link } = ReactRouterDOM;
 const { QueryClient, QueryClientProvider, useQuery } = ReactQuery;
-const { createContext, useContext } = React;
+const { createContext, useContext, useState, useMemo } = React;
 
 const queryClient = new QueryClient();
 
@@ -99,7 +99,7 @@ const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
             background: "#f1f5f9",
           }}
         >
-          LogFetch
+          LogFilter
         </Link>
       </nav>
     </aside>
@@ -114,49 +114,83 @@ const Home: React.FC = () => {
   return <div>Home: {data?.length ?? 0} 件</div>;
 };
 
+const FilterForm: React.FC<{ value: string; onChange: (v: string) => void }> = ({ value, onChange }) => (
+  <div style={{ marginBottom: "12px" }}>
+    <label style={{ display: "block", fontWeight: 600, marginBottom: "6px" }}>名前でフィルター</label>
+    <input
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder="pikachu など"
+      style={{
+        width: "100%",
+        padding: "8px 10px",
+        border: "1px solid #cbd5e1",
+        borderRadius: "6px",
+        fontSize: "14px",
+        boxSizing: "border-box",
+      }}
+    />
+  </div>
+);
+
+const PokemonItem: React.FC<{ pokemon: Pokemon }> = ({ pokemon }) => (
+  <li
+    key={pokemon.id}
+    style={{
+      border: "1px solid #e2e8f0",
+      borderRadius: "8px",
+      padding: "8px",
+      textAlign: "center",
+      backgroundColor: "#fff",
+    }}
+  >
+    <img
+      src={pokemon.image}
+      alt={pokemon.name}
+      width="72"
+      height="72"
+      style={{ display: "block", margin: "0 auto 6px" }}
+    />
+    <span style={{ textTransform: "capitalize", fontSize: "14px" }}>{pokemon.name}</span>
+  </li>
+);
+
+const PokemonView: React.FC<{ list: Pokemon[] }> = ({ list }) => (
+  <ul
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+      gap: "12px",
+      listStyle: "none",
+      padding: 0,
+      margin: 0,
+    }}
+  >
+    {list.map((pokemon) => (
+      <PokemonItem key={pokemon.id} pokemon={pokemon} />
+    ))}
+  </ul>
+);
+
 const LogFilter: React.FC = () => {
   const { data, isLoading, error } = useContext(PokemonContext);
+  const [filter, setFilter] = useState<string>("");
+
+  const filtered = useMemo(() => {
+    const list = data ?? [];
+    const q = filter.trim().toLowerCase();
+    if (!q) return list;
+    return list.filter((p) => p.name.toLowerCase().includes(q));
+  }, [data, filter]);
 
   if (isLoading) return <div>loading...</div>;
   if (error) return <div>error</div>;
 
   return (
     <div>
-      <p>全 {data?.length ?? 0} 件</p>
-      <ul
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
-          gap: "12px",
-          listStyle: "none",
-          padding: 0,
-          margin: 0,
-        }}
-      >
-        {data?.map((pokemon) => (
-          <li
-            key={pokemon.id}
-            style={{
-              border: "1px solid #e2e8f0",
-              borderRadius: "8px",
-              padding: "8px",
-              textAlign: "center",
-              backgroundColor: "#fff",
-            }}
-          >
-            <img
-              src={pokemon.image}
-              alt={pokemon.name}
-              width="72"
-              height="72"
-              style={{ display: "block", margin: "0 auto 6px" }}
-            />
-            <span style={{ textTransform: "capitalize", fontSize: "14px" }}>
-              {pokemon.name}
-            </span>
-          </li>
-        ))}
-      </ul>
+      <FilterForm value={filter} onChange={setFilter} />
+      <p style={{ marginBottom: "8px" }}>ヒット: {filtered.length} 件</p>
+      <PokemonView list={filtered} />
     </div>
   );
 };
