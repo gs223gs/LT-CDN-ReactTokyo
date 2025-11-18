@@ -14,7 +14,7 @@
 <body>
   <div id="root"></div>
   <script type="text/babel" data-presets="react">
-    const { BrowserRouter, Switch, Route, Link } = ReactRouterDOM;
+    const { HashRouter, Switch, Route, Link } = ReactRouterDOM;
     const { QueryClient, QueryClientProvider, useQuery } = ReactQuery;
 
     const queryClient = new QueryClient();
@@ -31,7 +31,7 @@
 
     const App = () => (
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
+        <HashRouter>
           <nav>
             <Link to="/">Home</Link> | <Link to="/logfetch">LogFetch</Link>
           </nav>
@@ -39,7 +39,7 @@
             <Route exact path="/" component={Home} />
             <Route path="/logfetch" component={LogFetch} />
           </Switch>
-        </BrowserRouter>
+        </HashRouter>
       </QueryClientProvider>
     );
 
