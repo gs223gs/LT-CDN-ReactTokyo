@@ -9,6 +9,31 @@ type Pokemon = {
   image: string;
 };
 
+const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+  <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f8fafc', color: '#0f172a' }}>
+    <aside
+      style={{
+        width: '220px',
+        borderRight: '1px solid #e2e8f0',
+        backgroundColor: '#ffffff',
+        padding: '16px',
+        boxSizing: 'border-box',
+      }}
+    >
+      <div style={{ marginBottom: '12px', fontWeight: 700, fontSize: '16px' }}>ログ取得ツール</div>
+      <nav style={{ display: 'grid', gap: '8px', fontSize: '14px' }}>
+        <Link to="/" style={{ padding: '8px', borderRadius: '6px', textDecoration: 'none', color: '#0f172a', background: '#f1f5f9' }}>
+          Home
+        </Link>
+        <Link to="/logfetch" style={{ padding: '8px', borderRadius: '6px', textDecoration: 'none', color: '#0f172a', background: '#f1f5f9' }}>
+          LogFetch
+        </Link>
+      </nav>
+    </aside>
+    <main style={{ flex: 1, padding: '20px' }}>{children}</main>
+  </div>
+);
+
 const Home: React.FC = () => <div>Home</div>;
 
 const LogFetch: React.FC = () => {
@@ -74,13 +99,12 @@ const LogFetch: React.FC = () => {
 const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>
     <HashRouter>
-      <nav>
-        <Link to="/">Home</Link> | <Link to="/logfetch">LogFetch</Link>
-      </nav>
-      <Switch>
-        <Route exact path="/" component={Home} />
-        <Route path="/logfetch" component={LogFetch} />
-      </Switch>
+      <Layout>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/logfetch" component={LogFetch} />
+        </Switch>
+      </Layout>
     </HashRouter>
   </QueryClientProvider>
 );
