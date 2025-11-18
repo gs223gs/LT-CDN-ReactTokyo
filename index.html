@@ -13,38 +13,6 @@
 </head>
 <body>
   <div id="root"></div>
-  <script type="text/babel" data-presets="react">
-    const { HashRouter, Switch, Route, Link } = ReactRouterDOM;
-    const { QueryClient, QueryClientProvider, useQuery } = ReactQuery;
-
-    const queryClient = new QueryClient();
-
-    const Home = () => <div>Home</div>;
-
-    const LogFetch = () => {
-      const { data, isLoading } = useQuery({
-        queryKey: ['logfetch'],
-        queryFn: () => new Promise((resolve) => setTimeout(() => resolve('log data fetched'), 400)),
-      });
-      return <div>{isLoading ? 'loading...' : data}</div>;
-    };
-
-    const App = () => (
-      <QueryClientProvider client={queryClient}>
-        <HashRouter>
-          <nav>
-            <Link to="/">Home</Link> | <Link to="/logfetch">LogFetch</Link>
-          </nav>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/logfetch" component={LogFetch} />
-          </Switch>
-        </HashRouter>
-      </QueryClientProvider>
-    );
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
+  <script type="text/babel" src="app.jsx" data-presets="react"></script>
 </body>
 </html>
