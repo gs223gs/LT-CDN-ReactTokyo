@@ -1,4 +1,4 @@
-const { HashRouter, Switch, Route, Link } = ReactRouterDOM;
+const { BrowserRouter, Switch, Route, Link } = ReactRouterDOM;
 const { QueryClient, QueryClientProvider, useQuery } = ReactQuery;
 const { createContext, useContext, useState, useMemo } = React;
 
@@ -197,7 +197,7 @@ const LogFilter: React.FC = () => {
 
 const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>
-    <HashRouter>
+    <BrowserRouter>
       <PokemonProvider>
         <Layout>
           <Switch>
@@ -206,7 +206,7 @@ const App: React.FC = () => (
           </Switch>
         </Layout>
       </PokemonProvider>
-    </HashRouter>
+    </BrowserRouter>
   </QueryClientProvider>
 );
 
