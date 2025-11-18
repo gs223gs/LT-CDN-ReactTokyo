@@ -1,40 +1,37 @@
 <!doctype html>
 <html lang="ja">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CDN React Boilerplate</title>
-
+  <title>React Router ミニマル</title>
+  <!-- 必要最小限: React / ReactDOM / React Router / Babel (JSX用) -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script crossorigin src="https://unpkg.com/react-router-dom@5.3.4/umd/react-router-dom.min.js"></script>
   <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-  <script crossorigin
-    src="https://cdn.jsdelivr.net/npm/react-router-dom@6.30.0/dist/umd/react-router-dom.development.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tanstack/react-query@4.36.1/build/umd/index.production.min.js"></script>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-
 </head>
-
 <body>
   <div id="root"></div>
-  <script type="text/babel">
+  <script type="text/babel" data-presets="react">
+    const { BrowserRouter, Switch, Route, Link } = ReactRouterDOM;
 
-    const App = () => {
-      return (
-        <div>
-          こんにちは
-        </div>
-      )
-    }
+    const Home = () => <div>Home</div>;
+    const LogFetch = () => <div>LogFetch</div>;
 
+    const App = () => (
+      <BrowserRouter>
+        <nav>
+          <Link to="/">Home</Link> | <Link to="/logfetch">LogFetch</Link>
+        </nav>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/logfetch" component={LogFetch} />
+        </Switch>
+      </BrowserRouter>
+    );
 
-    const container = document.getElementById('root')
-    const root = ReactDOM.createRoot(container)
-    root.render(<App />)
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
   </script>
 </body>
-</body>
-
 </html>
