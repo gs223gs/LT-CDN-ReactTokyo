@@ -90,7 +90,7 @@ const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
           Home
         </Link>
         <Link
-          to="/logfetch"
+          to="/logfilter"
           style={{
             padding: "8px",
             borderRadius: "6px",
