@@ -22,9 +22,7 @@ const PokemonContext = createContext<PokemonContextValue>({
   error: null,
 });
 
-const PokemonProvider: React.FC<{ children?: React.ReactNode }> = ({
-  children,
-}) => {
+const PokemonProvider = ({ children }) => {
   const query = useQuery<Pokemon[]>({
     queryKey: ["logfetch", 100],
     queryFn: async () => {
@@ -55,7 +53,7 @@ const PokemonProvider: React.FC<{ children?: React.ReactNode }> = ({
   );
 };
 
-const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+const Layout = ({ children }: React.ReactNode) => (
   <div
     style={{
       display: "flex",
@@ -107,16 +105,22 @@ const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
   </div>
 );
 
-const Home: React.FC = () => {
+const Home = () => {
   const { data, isLoading, error } = useContext(PokemonContext);
   if (isLoading) return <div>loading...</div>;
   if (error) return <div>error</div>;
   return <div>Home: {data?.length ?? 0} 件</div>;
 };
 
-const FilterForm: React.FC<{ value: string; onChange: (v: string) => void }> = ({ value, onChange }) => (
+type FormProps = {
+  value: string;
+  onChange: (v: string) => void;
+};
+const FilterForm = ({ value, onChange }: FormProps) => (
   <div style={{ marginBottom: "12px" }}>
-    <label style={{ display: "block", fontWeight: 600, marginBottom: "6px" }}>名前でフィルター</label>
+    <label style={{ display: "block", fontWeight: 600, marginBottom: "6px" }}>
+      名前でフィルター
+    </label>
     <input
       value={value}
       onChange={(e) => onChange(e.target.value)}
@@ -133,7 +137,7 @@ const FilterForm: React.FC<{ value: string; onChange: (v: string) => void }> = (
   </div>
 );
 
-const PokemonItem: React.FC<{ pokemon: Pokemon }> = ({ pokemon }) => (
+const PokemonItem = ({ pokemon }: Pokemon) => (
   <li
     key={pokemon.id}
     style={{
@@ -151,28 +155,23 @@ const PokemonItem: React.FC<{ pokemon: Pokemon }> = ({ pokemon }) => (
       height="72"
       style={{ display: "block", margin: "0 auto 6px" }}
     />
-    <span style={{ textTransform: "capitalize", fontSize: "14px" }}>{pokemon.name}</span>
+    <span style={{ textTransform: "capitalize", fontSize: "14px" }}>
+      {pokemon.name}
+    </span>
   </li>
 );
 
-const PokemonView: React.FC<{ list: Pokemon[] }> = ({ list }) => (
-  <ul
-    style={{
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
-      gap: "12px",
-      listStyle: "none",
-      padding: 0,
-      margin: 0,
-    }}
-  >
-    {list.map((pokemon) => (
-      <PokemonItem key={pokemon.id} pokemon={pokemon} />
-    ))}
-  </ul>
-);
+const PokemonView = ({ list }: Pokemon[]) => {
+  return (
+    <div>
+      {list.map((pokemon) => (
+        <PokemonItem key={pokemon.id} pokemon={pokemon} />
+      ))}
+    </div>
+  );
+};
 
-const LogFilter: React.FC = () => {
+const LogFilter = () => {
   const { data, isLoading, error } = useContext(PokemonContext);
   const [filter, setFilter] = useState<string>("");
 
@@ -189,28 +188,27 @@ const LogFilter: React.FC = () => {
   return (
     <div>
       <FilterForm value={filter} onChange={setFilter} />
-      <p style={{ marginBottom: "8px" }}>ヒット: {filtered.length} 件</p>
       <PokemonView list={filtered} />
     </div>
   );
 };
 
-const App: React.FC = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <PokemonProvider>
-        <Layout>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/logfilter" component={LogFilter} />
-          </Switch>
-        </Layout>
-      </PokemonProvider>
-    </BrowserRouter>
-  </QueryClientProvider>
-);
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <PokemonProvider>
+          <Layout>
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/logfilter" component={LogFilter} />
+            </Switch>
+          </Layout>
+        </PokemonProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
+};
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<App />);
